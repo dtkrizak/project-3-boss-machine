@@ -4,6 +4,7 @@ import getFromDatabaseById from './db';
 import addToDatabase from './db';
 import updateInstanceInDatabase from './db';
 import deleteFromDatabasebyId from './db';
+import checkMillionDollarIdea from './checkMillionDollarIdea';
 
 //use morgan for logging
 const morgan = require('morgan');
@@ -42,7 +43,7 @@ router.post('/', (req, res, next) => {
         (typeof newIdea.weeklyRevenue === 'number')) {
         const added = addToDatabase('ideas', newIdea);
         if (added) {
-            res.status(201).send(added);
+            res.status(201).send(added, checkMillionDollarIdea(added));
         } else {
             res.status(400).send('Idea not added to database');
         }
