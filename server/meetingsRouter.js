@@ -1,14 +1,17 @@
-const router = require('express').Router();
-import getAllFromDatabase from './db';
-import deleteAllFromDatabase from './db';
-import createMeeting from './db';
+const getAllFromDatabase = require('./db');
+const createMeeting = require('./db');
+const deleteAllFromDatabase = require('./db');
+const express = require('express');
+const meetingsRouter = express.Router();
+
+module.exports = meetingsRouter;
 
 //use morgan for logging
-const morgan = require('morgan');
-router.use(morgan('dev'));
+//const morgan = require('morgan');
+//meetingsRouter.use(morgan('dev'));
 
 //GET request to return array of meetings
-router.get('/', (req, res, next) => {
+meetingsRouter.get('/', (req, res, next) => {
     const meetings = getAllFromDatabase('meetings');
     if (meetings) {
         res.send(meetings);
@@ -18,7 +21,7 @@ router.get('/', (req, res, next) => {
 });
 
 //POST request to add a new meeting
-router.post('/', (req, res, next) => {
+meetingsRouter.post('/', (req, res, next) => {
     const newMeeting = createMeeting();
     if (newMeeting) {
         meetings.push(newMeeting);
@@ -29,13 +32,13 @@ router.post('/', (req, res, next) => {
 });
 
 //DELETE request to delete all meetings
-router.delete('/:meetingId', (req, res, next) => {
-    const meetings = deleteAllFromDatabase('meetings');
+meetingsRouter.delete('/', (req, res, next) => {
+    deleteAllFromDatabase('meetings');
+    res.status(204).send();
+    /*
     if(!meetings){
-        res.status(204).send();
     } else {
         res.status(404).send('Meetings not found');
     }
+    */
 });
-
-module.exports = router;

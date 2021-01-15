@@ -1,16 +1,17 @@
-const router = require('express').Router();
-import getAllFromDatabase from './db';
-import getFromDatabaseById from './db';
-import addToDatabase from './db';
-import updateInstanceInDatabase from './db';
-import deleteFromDatabasebyId from './db';
+const getAllFromDatabase = require('./db');
+const getFromDatabaseById = require('./db');
+const addToDatabase = require('./db');
+const updateInstanceInDatabase = require('./db');
+const deleteFromDatabasebyId = require('./db');
+const express = require('express');
+const minionsRouter = express.Router({ mergeParams: true });
 
 //use morgan for logging
-const morgan = require('morgan');
-router.use(morgan('dev'));
+//const morgan = require('morgan');
+//minionsRouter.use(morgan('dev'));
 
 //Middleware to check for single minion by id
-router.param('minionId', (req, res, next, id) => {
+minionsRouter.param('minionId', (req, res, next, id) => {
     const minionId = Number(req.params.id);
     const minion = getFromDatabaseById('minions', minionId);
     if(minion){
@@ -22,17 +23,17 @@ router.param('minionId', (req, res, next, id) => {
 });
 
 //GET request to return array of minions
-router.get('/', (req, res, next) => {
+minionsRouter.get('/', (req, res, next) => {
     const minions = getAllFromDatabase('minions');
     if(minions){
-        res.send(minions);
+        res.status(200).send(minions);
     }else{
         res.status(404).send('Minions not found');
     }
 });
 
 //POST request to add a new minion
-router.post('/', (req, res, next) => {
+minionsRouter.post('/', (req, res, next) => {
     const newMinion = req.body.minion;
     //need to check that newMinion contains id, name, title, and salary
     if((typeof newMinion.id === 'string') && 
@@ -51,12 +52,12 @@ router.post('/', (req, res, next) => {
 });
 
 //GET request to return single minion by id
-router.get('/:minionId', (req, res, next) => {
+minionsRouter.get('/:minionId', (req, res, next) => {
     res.send(req.minion);
 });
 
 //PUT request to update single minion by id
-router.put('/:minionId', (req, res, next) => {
+minionsRouter.put('/:minionId', (req, res, next) => {
     const minion = req.body.minion
     if (minion.id && (typeof minion.id === 'string')) {
         const updated = updateInstanceInDatabase('minions', minion);
@@ -71,7 +72,7 @@ router.put('/:minionId', (req, res, next) => {
 });
 
 //DELETE request to delete single minion by id
-router.delete('/:minionId', (req, res, next) => {
+minionsRouter.delete('/:minionId', (req, res, next) => {
     if (req.minion.id && (typeof req.minion.id === 'string')){
         const deleted = deleteFromDatabasebyId('minions', req.minion.id);
         if(deleted){
@@ -84,4 +85,5 @@ router.delete('/:minionId', (req, res, next) => {
     }
 });
 
-module.exports = router;
+module.exports = minionsRouter;
+

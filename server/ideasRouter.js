@@ -1,17 +1,18 @@
-const router = require('express').Router();
-import getAllFromDatabase from './db';
-import getFromDatabaseById from './db';
-import addToDatabase from './db';
-import updateInstanceInDatabase from './db';
-import deleteFromDatabasebyId from './db';
-import checkMillionDollarIdea from './checkMillionDollarIdea';
+const getAllFromDatabase = require('./db');
+const getFromDatabaseById = require('./db');
+const addToDatabase = require('./db');
+const updateInstanceInDatabase = require('./db');
+const deleteFromDatabasebyId = require('./db');
+const checkMillionDollarIdea = require('./checkMillionDollarIdea');
+const express = require('express');
+const ideasRouter = express.Router({ mergeParams: true });
 
 //use morgan for logging
-const morgan = require('morgan');
-router.use(morgan('dev'));
+//const morgan = require('morgan');
+//ideasRouter.use(morgan('dev'));
 
 //Middleware to check for single idea by id
-router.param('ideaId', (req, res, next, id) => {
+ideasRouter.param('ideaId', (req, res, next, id) => {
     const ideaId = Number(req.params.id);
     const idea = getFromDatabaseById('ideas', ideaId);
     if (idea) {
@@ -23,7 +24,7 @@ router.param('ideaId', (req, res, next, id) => {
 });
 
 //GET request to return array of ideas
-router.get('/', (req, res, next) => {
+ideasRouter.get('/', (req, res, next) => {
     const ideas = getAllFromDatabase('ideas');
     if (ideas) {
         res.send(ideas);
@@ -33,7 +34,7 @@ router.get('/', (req, res, next) => {
 });
 
 //POST request to add a new idea
-router.post('/', (req, res, next) => {
+ideasRouter.post('/', (req, res, next) => {
     const newIdea = req.body.idea;
     //checks that the idea contains the required parameters in the required format
     if ((typeof newIdea.id === 'string') &&
@@ -53,12 +54,12 @@ router.post('/', (req, res, next) => {
 });
 
 //GET request to return single idea by id
-router.get('/:ideaId', (req, res, next) => {
+ideasRouter.get('/:ideaId', (req, res, next) => {
     res.send(req.idea);
 });
 
 //PUT request to update single idea by id
-router.put('/:ideaId', (req, res, next) => {
+ideasRouter.put('/:ideaId', (req, res, next) => {
     const idea = req.body.idea
     if(idea.id && (typeof idea.id === 'string')){
         const updated = updateInstanceInDatabase('ideas', idea);
@@ -73,7 +74,7 @@ router.put('/:ideaId', (req, res, next) => {
 });
 
 //DELETE request to delete single idea by id
-router.delete('/:ideaId', (req, res, next) => {
+ideasRouter.delete('/:ideaId', (req, res, next) => {
     if (req.idea.id && (typeof req.idea.id === 'string')) {
         const deleted = deleteFromDatabasebyId('ideas', req.idea.id);
         if (deleted) {
@@ -86,4 +87,4 @@ router.delete('/:ideaId', (req, res, next) => {
     }
 });
 
-module.exports = router;
+module.exports = ideasRouter;
