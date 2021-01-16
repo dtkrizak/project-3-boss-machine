@@ -1,15 +1,13 @@
-const checkMillionDollarIdea = (idea) => {
-    if(idea.numWeeks && idea.weeklyRevenue){
-        const revenue = idea.numWeeks * idea.weeklyRevenue;
-        if(revenue > 1000000){
-            return true;
-        } else {
-            return false;
-        }
+const checkMillionDollarIdea = (req, res, next) => {
+    const { numWeeks, weeklyRevenue } = req.body;
+    const revenue = Number(numWeeks) * Number(weeklyRevenue);
+
+    if (!numWeeks || !weeklyRevenue || isNaN(revenue) || revenue < 1000000){
+        res.status(400).send();
     } else {
-        return null;
+        next();
     }
-};
+}
 
 // Leave this exports assignment so that the function can be used elsewhere
 module.exports = checkMillionDollarIdea;
