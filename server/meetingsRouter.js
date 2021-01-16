@@ -1,6 +1,4 @@
-const getAllFromDatabase = require('./db');
-const createMeeting = require('./db');
-const deleteAllFromDatabase = require('./db');
+const { getAllFromDatabase, addToDatabase, deleteAllFromDatabase, createMeeting } = require('./db');
 const express = require('express');
 const meetingsRouter = express.Router();
 
@@ -12,7 +10,7 @@ module.exports = meetingsRouter;
 
 //GET request to return array of meetings
 meetingsRouter.get('/', (req, res, next) => {
-    const meetings = getAllFromDatabase('meetings');
+    let meetings = getAllFromDatabase('meetings');
     if (meetings) {
         res.send(meetings);
     } else {
@@ -22,9 +20,8 @@ meetingsRouter.get('/', (req, res, next) => {
 
 //POST request to add a new meeting
 meetingsRouter.post('/', (req, res, next) => {
-    const newMeeting = createMeeting();
+    let newMeeting = addToDatabase('meetings', createMeeting());
     if (newMeeting) {
-        meetings.push(newMeeting);
         res.status(201).send(newMeeting);
     } else {
         res.status(400).send();

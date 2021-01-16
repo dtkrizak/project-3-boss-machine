@@ -1,8 +1,4 @@
-const getAllFromDatabase = require('./db');
-const getFromDatabaseById = require('./db');
-const addToDatabase = require('./db');
-const updateInstanceInDatabase = require('./db');
-const deleteFromDatabasebyId = require('./db');
+const { getAllFromDatabase, getFromDatabaseById, addToDatabase, updateInstanceInDatabase, deleteFromDatabasebyId } = require('./db');
 const express = require('express');
 const minionsRouter = express.Router({ mergeParams: true });
 
@@ -12,24 +8,28 @@ const minionsRouter = express.Router({ mergeParams: true });
 
 //Middleware to check for single minion by id
 minionsRouter.param('minionId', (req, res, next, id) => {
-    const minionId = Number(req.params.id);
+    const minionId = Number(id);
     const minion = getFromDatabaseById('minions', minionId);
+    req.minion = minion;
+    next();
+    /*
     if(minion){
-        req.minion = minion;
-        next();
     } else {
         res.status(404).send('Minion not found');    
     }
+    */
 });
 
 //GET request to return array of minions
 minionsRouter.get('/', (req, res, next) => {
     const minions = getAllFromDatabase('minions');
+    res.status(200).send(minions);
+    /* 
     if(minions){
-        res.status(200).send(minions);
     }else{
         res.status(404).send('Minions not found');
     }
+    */
 });
 
 //POST request to add a new minion
@@ -41,11 +41,13 @@ minionsRouter.post('/', (req, res, next) => {
         (typeof newMinion.title === 'string') && 
         (typeof newMinion.salary === 'number')){
         const added = addToDatabase('minions', newMinion);
+        res.status(201).send(newMinion);
+        /*
         if(added){
-            res.status(201).send(added);
         } else {
             res.status(400).send('Minion not added to database');
         }
+        */
     } else {
         res.status(400).send('Invalid minion supplied');
     }
