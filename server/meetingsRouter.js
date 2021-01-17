@@ -32,10 +32,4 @@ meetingsRouter.post('/', (req, res, next) => {
 meetingsRouter.delete('/', (req, res, next) => {
     deleteAllFromDatabase('meetings');
     res.status(204).send();
-    /*
-    if(!meetings){
-    } else {
-        res.status(404).send('Meetings not found');
-    }
-    */
 });
