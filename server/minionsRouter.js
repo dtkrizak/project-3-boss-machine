@@ -81,7 +81,7 @@ minionsRouter.post('/:minionId/work', (req, res, next) => {
 });
 
 //PUT request to update single work by id
-minionsRouter.put('/:minionId/work/:workId', (req, res, next) => {
+minionsRouter.put('/:mnionId/work/:workId', (req, res, next) => {
     if (req.params.minionId !== req.body.minionId) {
         res.status(400).send();
     } else {
