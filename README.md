@@ -1,5 +1,5 @@
 # project-4-boss-machine-start
-Create an API using Express and SQL to serve information to an imaginary boss machine 
+Create an API using Express to serve information to an imaginary boss machine 
 
 This project handles the routing for accessing and saving data focused inside the /server folder
     api.js encapsulates minionsRouter, ideasRouter, and meetingsRouter
